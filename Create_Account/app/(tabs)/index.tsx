@@ -4,6 +4,7 @@ import CheckBox from '@react-native-community/checkbox';
 import { useState, useRef } from 'react';
 
 export default function CardInputScreen() {
+  const [selectedMethod, setSelectedMethod] = useState('email');
   const [fullName, setFullName] = useState('');
   const [userName, setUsername] = useState('');
   const [selectedGender, setSelectedGender] = useState('');
@@ -24,6 +25,7 @@ export default function CardInputScreen() {
     fullName?: boolean;
     userName?: boolean;
     emailAdress?: boolean;
+    phoneNumber?: boolean;
     password?: boolean;
     isChecked?: boolean;
   };
@@ -35,9 +37,16 @@ export default function CardInputScreen() {
     //Find error
     if (!fullName.trim()) newErrors.fullName = true;
     if (!userName.trim()) newErrors.userName = true;
-    if (!emailAdress.trim()) newErrors.emailAdress = true;
     if (!password.trim()) newErrors.password = true;
     if (!isChecked) newErrors.isChecked = true;
+
+     // Conditionally validate email or phone based on selected method
+    if (selectedMethod === 'email' && !emailAdress.trim()) {
+      newErrors.emailAdress = true;
+    }
+    if (selectedMethod === 'phone' && !phoneNumber.trim()) {
+      newErrors.phoneNumber = true;
+    }
 
     //Display error massesge or sucess message
     if (Object.keys(newErrors).length > 0) {
@@ -56,6 +65,11 @@ export default function CardInputScreen() {
   };
 
   //text for popup windows. 
+  const showMethod = () => {
+    setModalText('Choose your prefered sign up method from the list');
+    setModalVisible(true);
+  };
+
   const showTerms = () => {
     setModalText('Terms of Use Agreement... please add customized text for Terms of Use Agreement');
     setModalVisible(true);
@@ -81,12 +95,10 @@ export default function CardInputScreen() {
     setModalVisible(true);
   };
 
-  {/* 
   const showPhone = () => {
     setModalText('enter you phone number');
     setModalVisible(true);
   };
-  */}
 
   const showGender = () => {
     setModalText('Choose your gender from the list');
@@ -108,17 +120,46 @@ export default function CardInputScreen() {
       
       {/* Box for title and title image */}
       <View style={styles.titleWrapper}> 
-        
-        <Text style={styles.title}>Join with your email adress</Text>
-        <Image source={require('../../assets/images/email.png')} style={styles.emailImage}/>
-        
-        {/*
-        <Text style={styles.title}>Join with your phone number</Text>
-        <Image source={require('../../assets/images/phone.png')} style={styles.emailImage}/>
-        */}
+      {selectedMethod === 'email' ? (
+          <>
+            <Text style={styles.title}>Join with your email address</Text>
+            <Image source={require('../../assets/images/email.png')} style={styles.emailImage} />
+          </>
+        ) : (
+          <>
+            <Text style={styles.title}>Join with your phone number</Text>
+            <Image source={require('../../assets/images/phone.png')} style={styles.emailImage} />
+          </>
+        )}
       </View>
 
       <View style={styles.whiteContainer}>
+
+        {/* Choose login method - picker */}
+        <View style={styles.labelContainer}>
+          <Text style={styles.label}> Change sign in method</Text>
+          <Pressable onPress={showMethod}>
+          <Image source={require('../../assets/images/question.png')} style={styles.icon} />
+          </Pressable>
+        </View>
+        <View style={styles.pickerContainer}>
+          <View style={styles.pickerWrapper}>
+            <Picker
+              selectedValue={selectedMethod}
+              onValueChange={(itemValue) => setSelectedMethod(itemValue)}
+              dropdownIconColor="#ccc"
+              mode="dropdown"
+            >
+              {selectedMethod === '' && (
+                <Picker.Item label="Please select" value="" enabled={false} />
+              )}
+
+              {/* Alternatives */}
+              <Picker.Item label="Email address" value="email" />
+              <Picker.Item label="Phone number" value="phone" />
+            </Picker>
+          </View>
+        </View>
 
         {/* Box for inputs: Full name */}
         <View style={styles.labelContainer}>
@@ -146,33 +187,36 @@ export default function CardInputScreen() {
           onChangeText={setUsername}
         />
 
-          {/* Box for inputs: Email */}
-        <View style={styles.labelContainer}>
-          <Text style={styles.label}> Email address</Text>
-          <Pressable onPress={showEmail}>
-          <Image source={require('../../assets/images/question.png')} style={styles.icon} />
-          </Pressable>
-        </View>
-          <TextInput
-            style={[styles.input, errors.emailAdress && styles.errorInput]}
-            value={emailAdress}
-            onChangeText={setEmailAdress}
-          />
+          {/* Box for inputs: email or phone */}
+          {selectedMethod === 'email' ? (
+            <>
+            <View style={styles.labelContainer}>
+              <Text style={styles.label}> Email address</Text>
+              <Pressable onPress={showEmail}>
+              <Image source={require('../../assets/images/question.png')} style={styles.icon} />
+              </Pressable>
+            </View>
+            <TextInput
+              style={[styles.input, errors.emailAdress && styles.errorInput]}
+              value={emailAdress}
+              onChangeText={setEmailAdress}/>
+          </>
+          ) : (
+          <>
+            <View style={styles.labelContainer}>
+              <Text style={styles.label}> Phone number</Text>
+              <Pressable onPress={showPhone}>
+              <Image source={require('../../assets/images/question.png')} style={styles.icon} />
+              </Pressable>
+            </View>
+            <TextInput
+              style={styles.input}
+              keyboardType="numeric"
+              value={phoneNumber}
+              onChangeText={setPhoneNumber}/>
+          </>
+          )}
 
-          {/* Box for inputs: Phone */}
-        {/* 
-        <View style={styles.labelContainer}>
-          <Text style={styles.label}> Phone number</Text>
-          <Pressable onPress={showPhone}>
-          <Image source={require('../../assets/images/question.png')} style={styles.icon} />
-          </Pressable>
-        </View>
-          <TextInput
-            style={styles.input}
-            value={phoneNumber}
-            onChangeText={setPhoneNumber}
-          />
-          */}
 
           {/* Picker input for gender */}
         <View style={styles.labelContainer}>
@@ -374,8 +418,23 @@ const styles = StyleSheet.create({
     backgroundColor: '#fff',
   },
 
+  //Change sign up method
+     // Gender drop down menus
+     pickerContainer: {
+      height: 56,
+      marginBottom: 16,
+    },
+    pickerWrapper: {
+      height: 50,
+      borderColor: '#ccc',
+      borderWidth: 1,
+      borderRadius: 8,
+      paddingHorizontal: 2,
+      backgroundColor: '#fff',
+    },
 
-  // Birth date drop down menus
+
+  // Birth date inout menus
   dateContainer: {
     flexDirection: 'row',
     justifyContent: 'space-between',
@@ -404,6 +463,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 2,
     backgroundColor: '#fff',
   },
+
 
 
   //terms of use
