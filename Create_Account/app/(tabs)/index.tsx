@@ -19,6 +19,7 @@ export default function CardInputScreen() {
   const [errors, setErrors] = useState<ErrorsType>({});
   const [errorMessage, setErrorMessage] = useState('');
 
+  // Add typ boolean for if a field is written in 
   type ErrorsType = {
     fullName?: boolean;
     userName?: boolean;
@@ -27,15 +28,18 @@ export default function CardInputScreen() {
     isChecked?: boolean;
   };
   
+  //Function for validating that all essentil field are filled in
   const validateAndSubmit = () => {
     const newErrors: ErrorsType = {};
 
+    //Find error
     if (!fullName.trim()) newErrors.fullName = true;
     if (!userName.trim()) newErrors.userName = true;
     if (!emailAdress.trim()) newErrors.emailAdress = true;
     if (!password.trim()) newErrors.password = true;
     if (!isChecked) newErrors.isChecked = true;
 
+    //Display error massesge or sucess message
     if (Object.keys(newErrors).length > 0) {
       setErrors(newErrors);
       setErrorMessage('You need to fill in all the essential information above');
@@ -46,10 +50,12 @@ export default function CardInputScreen() {
     }
   };
 
+  //Chech if the terms and conditions are checked
   const toggleCheckbox = () => {
     setIsChecked(!isChecked);
   };
 
+  //text for popup windows. 
   const showTerms = () => {
     setModalText('Terms of Use Agreement... please add customized text for Terms of Use Agreement');
     setModalVisible(true);
@@ -100,7 +106,8 @@ export default function CardInputScreen() {
   return (
     <ScrollView style={styles.fullContainer} contentContainerStyle={styles.scrollContainer}>
       
-      <View style={styles.titleWrapper}>
+      {/* Box for title and title image */}
+      <View style={styles.titleWrapper}> 
         
         <Text style={styles.title}>Join with your email adress</Text>
         <Image source={require('../../assets/images/email.png')} style={styles.emailImage}/>
@@ -112,6 +119,8 @@ export default function CardInputScreen() {
       </View>
 
       <View style={styles.whiteContainer}>
+
+        {/* Box for inputs: Full name */}
         <View style={styles.labelContainer}>
           <Text style={styles.label}> Full name</Text>
           <Pressable onPress={showName}>
@@ -124,6 +133,7 @@ export default function CardInputScreen() {
           onChangeText={setFullName}
         />
 
+          {/* Box for inputs: Username */}
         <View style={styles.labelContainer}>
           <Text style={styles.label}> Username</Text>
           <Pressable onPress={showUsername}>
@@ -136,6 +146,7 @@ export default function CardInputScreen() {
           onChangeText={setUsername}
         />
 
+          {/* Box for inputs: Email */}
         <View style={styles.labelContainer}>
           <Text style={styles.label}> Email address</Text>
           <Pressable onPress={showEmail}>
@@ -148,6 +159,7 @@ export default function CardInputScreen() {
             onChangeText={setEmailAdress}
           />
 
+          {/* Box for inputs: Phone */}
         {/* 
         <View style={styles.labelContainer}>
           <Text style={styles.label}> Phone number</Text>
@@ -162,6 +174,7 @@ export default function CardInputScreen() {
           />
           */}
 
+          {/* Picker input for gender */}
         <View style={styles.labelContainer}>
           <Text style={styles.label}> Gender</Text>
           <Pressable onPress={showGender}>
@@ -190,6 +203,7 @@ export default function CardInputScreen() {
           </View>
         </View>
 
+              {/* Box for inputs: Date of Birth */}
           <View style={styles.labelContainer}>
           <Text style={styles.label}> Date of birth</Text>
           <Pressable onPress={showDate}>
@@ -225,6 +239,7 @@ export default function CardInputScreen() {
               /> 
           </View>
 
+              {/* Box for inputs: Password */}
           <View style={styles.labelContainer}>
           <Text style={styles.label}> Password </Text>
           <Pressable onPress={showPassword}>
@@ -267,7 +282,7 @@ export default function CardInputScreen() {
 
         </View>
 
-        {/* Modal for popup */}
+        {/* Modal for popup windows*/}
         <Modal transparent={true} visible={modalVisible} animationType="fade">
           <View style={styles.modalOverlay}>
             <View style={styles.modalContent}>
