@@ -1,6 +1,5 @@
 import { View, ScrollView, TextInput, StyleSheet, Text, Image, Modal, Pressable, Button, Animated, Easing } from 'react-native';
 import { Picker } from '@react-native-picker/picker';
-import CheckBox from '@react-native-community/checkbox';
 import { useState, useRef } from 'react';
 
 export default function CardInputScreen() {

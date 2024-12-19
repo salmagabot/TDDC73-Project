@@ -1,109 +1,84 @@
-import { StyleSheet, Image, Platform } from 'react-native';
+// app/index.tsx
+import React, { useState } from 'react';
+import { View, StyleSheet, Text } from 'react-native';
+import { Picker } from '@react-native-picker/picker';
+import Carousel from './carousel';
 
-import { Collapsible } from '@/components/Collapsible';
-import { ExternalLink } from '@/components/ExternalLink';
-import ParallaxScrollView from '@/components/ParallaxScrollView';
-import { ThemedText } from '@/components/ThemedText';
-import { ThemedView } from '@/components/ThemedView';
-import { IconSymbol } from '@/components/ui/IconSymbol';
+// Images for Option 1
+const option1Images = [
+    require('../assets/test/images/b4.png'),
+    require('../assets/test/images/b5.png'),
+    require('../assets/test/images/b6.png'),
+    require('../assets/test/images/b7.png'),
+    require('../assets/test/images/b8.png'),
+];
 
-export default function TabTwoScreen() {
+// Images for Option 2
+const option2Images = [
+    require('../assets/test/images/b9.png'),
+    require('../assets/test/images/b10.png'),
+    require('../assets/test/images/b11.png'),
+    require('../assets/test/images/b12.png'),
+    require('../assets/test/images/b13.png'),
+];
+
+const App = () => {
+  // State for selected picker option
+  const [selectedOption, setSelectedOption] = useState('option1');
+  // State for selected image
+  const [selectedImage, setSelectedImage] = useState<string | null>(null);
+
+  // Determine which set of images to display based on the selected option
+  const images = selectedOption === 'option1' ? option1Images : option2Images;
+
+  // Callback function triggered when an image is selected in the carousel
+  const handleImageSelect = (image: any) => {
+    setSelectedImage(image); // Update the selected image
+  };
+
   return (
-    <ParallaxScrollView
-      headerBackgroundColor={{ light: '#D0D0D0', dark: '#353636' }}
-      headerImage={
-        <IconSymbol
-          size={310}
-          color="#808080"
-          name="chevron.left.forwardslash.chevron.right"
-          style={styles.headerImage}
-        />
-      }>
-      <ThemedView style={styles.titleContainer}>
-        <ThemedText type="title">Explore</ThemedText>
-      </ThemedView>
-      <ThemedText>This app includes example code to help you get started.</ThemedText>
-      <Collapsible title="File-based routing">
-        <ThemedText>
-          This app has two screens:{' '}
-          <ThemedText type="defaultSemiBold">app/(tabs)/index.tsx</ThemedText> and{' '}
-          <ThemedText type="defaultSemiBold">app/(tabs)/explore.tsx</ThemedText>
-        </ThemedText>
-        <ThemedText>
-          The layout file in <ThemedText type="defaultSemiBold">app/(tabs)/_layout.tsx</ThemedText>{' '}
-          sets up the tab navigator.
-        </ThemedText>
-        <ExternalLink href="https://docs.expo.dev/router/introduction">
-          <ThemedText type="link">Learn more</ThemedText>
-        </ExternalLink>
-      </Collapsible>
-      <Collapsible title="Android, iOS, and web support">
-        <ThemedText>
-          You can open this project on Android, iOS, and the web. To open the web version, press{' '}
-          <ThemedText type="defaultSemiBold">w</ThemedText> in the terminal running this project.
-        </ThemedText>
-      </Collapsible>
-      <Collapsible title="Images">
-        <ThemedText>
-          For static images, you can use the <ThemedText type="defaultSemiBold">@2x</ThemedText> and{' '}
-          <ThemedText type="defaultSemiBold">@3x</ThemedText> suffixes to provide files for
-          different screen densities
-        </ThemedText>
-        <Image source={require('@/assets/images/react-logo.png')} style={{ alignSelf: 'center' }} />
-        <ExternalLink href="https://reactnative.dev/docs/images">
-          <ThemedText type="link">Learn more</ThemedText>
-        </ExternalLink>
-      </Collapsible>
-      <Collapsible title="Custom fonts">
-        <ThemedText>
-          Open <ThemedText type="defaultSemiBold">app/_layout.tsx</ThemedText> to see how to load{' '}
-          <ThemedText style={{ fontFamily: 'SpaceMono' }}>
-            custom fonts such as this one.
-          </ThemedText>
-        </ThemedText>
-        <ExternalLink href="https://docs.expo.dev/versions/latest/sdk/font">
-          <ThemedText type="link">Learn more</ThemedText>
-        </ExternalLink>
-      </Collapsible>
-      <Collapsible title="Light and dark mode components">
-        <ThemedText>
-          This template has light and dark mode support. The{' '}
-          <ThemedText type="defaultSemiBold">useColorScheme()</ThemedText> hook lets you inspect
-          what the user's current color scheme is, and so you can adjust UI colors accordingly.
-        </ThemedText>
-        <ExternalLink href="https://docs.expo.dev/develop/user-interface/color-themes/">
-          <ThemedText type="link">Learn more</ThemedText>
-        </ExternalLink>
-      </Collapsible>
-      <Collapsible title="Animations">
-        <ThemedText>
-          This template includes an example of an animated component. The{' '}
-          <ThemedText type="defaultSemiBold">components/HelloWave.tsx</ThemedText> component uses
-          the powerful <ThemedText type="defaultSemiBold">react-native-reanimated</ThemedText>{' '}
-          library to create a waving hand animation.
-        </ThemedText>
-        {Platform.select({
-          ios: (
-            <ThemedText>
-              The <ThemedText type="defaultSemiBold">components/ParallaxScrollView.tsx</ThemedText>{' '}
-              component provides a parallax effect for the header image.
-            </ThemedText>
-          ),
-        })}
-      </Collapsible>
-    </ParallaxScrollView>
+    <View style={styles.container}>
+      {/* Title */}
+      <Text style={styles.title}>Image Carousel</Text>
+
+      {/* Picker to switch between options */}
+      <Picker
+        selectedValue={selectedOption}
+        onValueChange={(itemValue) => setSelectedOption(itemValue)}
+        style={styles.picker}
+      >
+        <Picker.Item label="Option 1" value="option1" />
+        <Picker.Item label="Option 2" value="option2" />
+      </Picker>
+
+      {/* Carousel component */}
+      <Carousel images={images} onSelect={handleImageSelect} />
+
+      {/* Display selected image information */}
+      {selectedImage && <Text style={styles.selectedText}>Selected Image</Text>}
+    </View>
   );
-}
+};
 
 const styles = StyleSheet.create({
-  headerImage: {
-    color: '#808080',
-    bottom: -90,
-    left: -35,
-    position: 'absolute',
+  container: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    padding: 20,
   },
-  titleContainer: {
-    flexDirection: 'row',
-    gap: 8,
+  title: {
+    fontSize: 24,
+    marginBottom: 20,
+  },
+  picker: {
+    width: '80%',
+    height: 50,
+  },
+  selectedText: {
+    marginTop: 20,
+    fontSize: 16,
   },
 });
+
+export default App;
