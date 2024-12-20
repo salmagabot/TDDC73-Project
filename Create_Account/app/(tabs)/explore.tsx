@@ -2,7 +2,7 @@
 import React, { useState } from 'react';
 import { View, StyleSheet, Text } from 'react-native';
 import { Picker } from '@react-native-picker/picker';
-import Carousel from './carousel';
+import Carousel from './Carousel';
 
 // Images for Option 1
 const option1Images = [
